@@ -196,3 +196,29 @@ The github repo can be found here →
 ---
 
 
+
+>[!note] 
+
+>[!abstract] b
+
+>[!info] c
+
+>[!todo] d
+
+>[!tip] e
+
+>[!success] f
+
+>[!question] g 
+
+>[!warning] h 
+
+>[!failure] i
+
+>[!danger] j
+
+>[!bug] k
+
+>[!example] l
+
+>[!quote] o

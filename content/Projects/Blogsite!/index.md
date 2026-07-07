@@ -288,3 +288,119 @@ static/
 > Press <kbd>CTRL</kbd>+<kbd>SHIFT</kbd>+<kbd>R</kbd> to hard reload for the changes to happen
 
 <!-- ## Porting Obsidian Over to Hugo  -->
+
+## 📝 Porting Obsidian to Hugo
+
+Obsidian and Hugo are closer than they look — both work with plain markdown files,
+so with the right setup from the start, your notes can flow into your site with
+minimal friction.
+
+
+### Setting up Obsidian
+
+
+
+#### 1. Change Settings 
+For setting up Obsidian with Hugo it is recommended to create a new **Vault** and change these following settings :
+
+- <kbd>Settings → Files & Links → Use **Wikilinks**</kbd> : OFF
+- <kbd>Settings → Files & Links → New link format</kbd> : *Relative path to file*
+- <kbd>Settings → Files & Links → Default location for new attachments</kbd> : *Same folder as current file*
+
+
+
+#### 2. Creating a Template
+
+Obsidian has two ways to handle templates — the built-in **Templates** core plugin
+and the community plugin **Templater**. Both work, but they serve slightly different needs.
+
+| | Core Templates | Templater |
+|---|:---:|:---:|
+| Setup | Built-in, no install needed | Community plugin |
+| Title variable | Filename only | Parent folder name |
+| Auto-rename files | ✗ | ✓ |
+| Hugo page bundles | ✗ | ✓ |
+| Runs JavaScript | ✗ | ✓ |
+
+
+>[!abstract] Recommendation
+> For Hugo page bundles, **Templater** is the recommended approach. But have included the core plugin as well
+> just remember to follow the <span class="dotted-link">[content management provided by Hugo ↗](https://gohugo.io/content-management/organization/).</span>
+
+
+{{< tabs >}}
+
+    {{< tab label="Templater - Community Plugin" >}}
+
+    To use Templater in Obsidian, install and enable it in `Community Plugins`
+    and create the template folder `templates/`.
+    
+    Once installed, modify the following settings :
+    - <kbd>Trigger Templater on file creation</kbd> → ON
+    - <kbd>Template folder location</kbd>  to `templates/`.
+
+    >[!tip] 
+    > By default, <kbd>Alt</kbd> + <kbd>E</kbd> will insert the template modal. 
+
+    Once that's set up, create a new file inside `templates/` named `Blog-Templater` with
+    the following:
+
+    ```md
+    <%* await tp.file.rename("index") %>
+
+    ---
+    title: "<% tp.file.folder(false) %>"
+    description: "Description Here"
+    date: "<% tp.date.now("YYYY-MM-DD") %>T<% tp.date.now("HH:mm:ss") %>+00:00"
+    draft: true
+
+    ---
+
+    Short summary shown on list pages and cards
+
+    <!--more-->
+
+    Main content goes here
+    ```
+
+    {{< /tab >}}
+
+    {{< tab label="Template - Core Plugin" >}}
+    
+    To use templates in Obsidian, first enable it by going to
+    <kbd>Settings → Core Plugins → Templates</kbd> and point the template folder path to `templates/`.
+
+    >[!tip] 
+    > It's also worth setting a hotkey for <kbd>Insert Template</kbd> so you can quickly apply it to any new note.
+
+    Once that's set up, create a new file inside `templates/` named `Blog-Template` with
+    the following:
+
+    ```markdown
+    ---
+    title: "{{title}}"
+    description: "Description Here"
+    date: "{{date:YYYY-MM-DD}}T{{time:HH:mm:ss}}+00:00"
+    draft: true
+    ---
+
+    Short summary shown on list pages and cards
+
+    <!--more-->
+
+    Main content goes here
+    ```
+
+    {{< /tab >}}
+    
+{{< /tabs >}}
+
+
+>[!note]
+> - `draft: true` — keeps notes **hidden from your site** until you're ready to publish
+>
+> You can add *additional frontmatter* — check out <span class="dotted-link">[Hugo ↗](https://gohugo.io/content-management/front-matter/#front-matter-variables) and [Blowfish ↗](https://blowfish.page/docs/front-matter/)</span> writeup for all available options.
+
+
+
+### Copying Obsidian → Hugo
