@@ -1,13 +1,14 @@
 +++
 date = '2025-12-12T19:08:43+08:00'
 draft = false
-title = 'Blogsite!'
+title = 'From Notes to Site - How This Site Was Built'
 description = "a simple and passionate personal site"
 
 +++
 
-How I set up Hugo + Blowfish on GitHub Pages along with my own customization.
-<!-- , and ported my Obsidian notes over with one `Python` script. -->
+A guide to replicating my setup — Hugo with the Blowfish theme deployed on GitHub Pages, 
+customised with my own color scheme and fonts, paired with an Obsidian workflow for 
+writing and publishing posts with ease.
 
 <!--more-->
 {{< github repo="Bounde3d/Bounde3d.github.io" showThumbnail=false >}}
@@ -175,6 +176,7 @@ A green
 checkmark 🟢 means it deployed successfully and your site will be live at 
 `https://yourusername.github.io`!
 
+---
 
 ## 🎨 Customising my Theme
 
@@ -287,7 +289,9 @@ static/
 >[!note] 
 > Press <kbd>CTRL</kbd>+<kbd>SHIFT</kbd>+<kbd>R</kbd> to hard reload for the changes to happen
 
-<!-- ## Porting Obsidian Over to Hugo  -->
+
+---
+
 
 ## 📝 Porting Obsidian to Hugo
 
@@ -324,8 +328,8 @@ and the community plugin **Templater**. Both work, but they serve slightly diffe
 
 
 >[!abstract] Recommendation
-> For Hugo page bundles, **Templater** is the recommended approach. But have included the core plugin as well
-> just remember to follow the <span class="dotted-link">[content management provided by Hugo ↗](https://gohugo.io/content-management/organization/).</span>
+> For Hugo page bundles, **Templater** is the recommended approach. But I have included the core plugin as well.
+> But do follow the <span class="dotted-link">[content management guide provided by Hugo ↗](https://gohugo.io/content-management/organization/).</span>
 
 
 {{< tabs >}}
@@ -402,5 +406,100 @@ and the community plugin **Templater**. Both work, but they serve slightly diffe
 > You can add *additional frontmatter* — check out <span class="dotted-link">[Hugo ↗](https://gohugo.io/content-management/front-matter/#front-matter-variables) and [Blowfish ↗](https://blowfish.page/docs/front-matter/)</span> writeup for all available options.
 
 
+#### 3. Image Handling
 
-### Copying Obsidian → Hugo
+>[!fail] Image Rendering
+> By default, Obsidian saves pasted images with spaces in the filename <br> 
+> - e.g. `Pasted image 20260707162136.png` 
+>
+> Hugo struggles with spaces in filenames with `%20` in the path, which causes **images to not render** on your site.
+
+To fix this we use the **Attachment Management** community plugin which will rename pasted image
+into our desired output.
+
+1. In Community Plugin, search for `Attachment Management` by trganda
+2. Install and enable it
+3. In Settings, change the following
+    - <kbd>Attachment path</kbd>  →  `./`   
+    - <kbd>Attachment format</kbd> → `pastedimg-${date}`
+    - <kbd>Automatically rename attachment</kbd> → **ON**
+
+
+Now when you paste an image it should automatically be renamed and stored on the current folder!
+
+#### Sync Obsidian → Hugo {#obsidian-hugo}
+
+Once your Obsidian vault is set up, you can *sync* your notes directly into Hugo's 
+`/content` folder. Run this whenever you want to publish new or updated notes. 
+
+>[!warning]
+>it mirrors your Obsidian folder exactly, **adding, updating, and removing** files to 
+> match your vault.
+
+{{< tabs >}}
+
+    {{< tab label="Windows" >}}
+    In powershell :
+    ```pwsh
+    robocopy "\path\to\ObsidianFiles\Blogs" "\path\to\Website\content\content\blog" /mir
+    ```
+
+    {{< /tab >}}
+
+    {{< tab label="Unix" >}}
+    In terminal :
+    ```shell
+    rsync -av --delete "/path/to/ObsidianFiles/Site/Blogs/" "/path/to/Website/content/blog/"
+    ```
+
+    {{< /tab >}}
+    
+{{< /tabs >}}
+
+
+---
+
+
+## ✅ Workflow
+
+Once everything is set up, the workflow for creating and publishing a new post is straightforward.
+
+### 1. Create a New Folder in Obsidian
+
+In your Obsidian vault, inside your `Blogs/` folder create a **new folder** — 
+the folder name will become the title of your post:
+
+```
+Blogs/
+└── my-new-post/       ← create this
+```
+
+
+### 2. Create a New Note
+
+Inside that folder, create a new note and run <kbd>Insert Template</kbd> 
+with your hotkey (<kbd>Alt</kbd> + <kbd>E</kbd>) and select `Blog-Template`. 
+
+Templater will automatically:
+- **Rename** the file to `index.md`
+- **Fill in** the title with the folder name
+- **Set** the date to now
+
+### 3. Write Your Post
+
+Fill in your content, and once you are done set `draft` to `false`
+
+### 4. Upload Post
+
+To fully publish your post:
+  1. [Sync your notes](#obsidian-hugo) with Hugo's content folder
+  2. `git add ` & `git commit` 
+  3. `git push`
+
+And once GitHub Actions finishes building — usually within a minute — your post will be live!
+
+>[!tip] 
+> If needed, you could also create a script to automate the **Upload Post** 
+
+
+---

