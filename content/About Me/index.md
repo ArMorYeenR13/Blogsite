@@ -7,7 +7,7 @@ layout = "about"
 +++
 
 <div class="text-left" style="font-size: 1.2rem; line-height: 1.8;">
-Hello! My online name is <mark>Bounde3d</mark> <span class="text-muted">(pronounced Bounded)</span>👋, a Computer Science graduate who likes to talk about IoT, software and other tech-related topics. Currently based in <strong class="text-accent">Malaysia</strong>, I'm interested in cybersecurity and building quirky projects. Outside of tech, I enjoy board games, taking photos of nature, and badminton.
+Hello! My online name is <mark>Bounde3d</mark> <span class="text-muted">(pronounced Bounded)</span>👋, a <em>Tech Enthusiast</em> who likes to talk about IoT, software and other tech-related topics. Currently based in <strong class="text-accent">Malaysia</strong>, I'm interested in cybersecurity and building quirky projects. Outside of tech, I enjoy board games, taking photos of nature, and badminton.
 </div>
 
 
